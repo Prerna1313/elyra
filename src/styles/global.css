@@ -1,0 +1,83 @@
+/* RESET & BASE STYLES */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    background-color: #000;
+    color: white;
+    /* We use min-height so the page can grow beyond the screen */
+    min-height: 100vh; 
+    /* Hide horizontal scroll across the whole app */
+    overflow-x: hidden; 
+}
+
+/* LANDING PAGE LOGIC (Locked) */
+/* If the app is "sleeping", we disable vertical scrolling */
+html:has(.is-sleeping), 
+body:has(.is-sleeping) {
+    overflow-y: hidden;
+    height: 100vh;
+}
+
+/* CREATE STORY PAGE LOGIC (Unlocked) */
+/* If the create-container is present, we FORCE the scrollbar to work */
+html:has(.create-container), 
+body:has(.create-container) {
+    overflow-y: auto !important;
+    height: auto !important;
+}
+
+/* DISCOVERY PAGE LOGIC */
+.app-container.is-active {
+    overflow-y: auto;
+    min-height: 100vh;
+}
+
+/* --- YOUR EXISTING LANDING STYLES --- */
+
+.is-sleeping .layer-item {
+    filter: brightness(0.7) saturate(1.2);
+    transition: filter 2s ease;
+}
+
+.landing-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(
+        circle 150px at var(--x, 50%) var(--y, 50%), 
+        transparent 0%, 
+        rgba(0, 0, 0, 0.95) 100%
+    );
+    transition: opacity 2.5s cubic-bezier(0.4, 0, 0.2, 1), filter 2.5s ease;
+}
+
+.landing-overlay.is-fading {
+    opacity: 0;
+    filter: blur(40px);
+    pointer-events: none;
+}
+
+.aura-title {
+    font-size: 4rem;
+    font-weight: 900;
+    letter-spacing: 15px;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.aura-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: white;
+    padding: 15px 40px;
+    cursor: pointer;
+    transition: 0.4s ease;
+}
+
+.aura-btn:hover {
+    background: white;
+    color: black;
+}

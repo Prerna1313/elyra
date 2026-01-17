@@ -1,0 +1,120 @@
+/* --- LANDING OVERLAY (The Flashlight Logic) --- */
+.landing-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* THE FIX: 'transparent' in the middle creates the window into the forest */
+    background: radial-gradient(
+        circle 180px at var(--x, 50%) var(--y, 50%), 
+        transparent 0%, 
+        rgba(0, 0, 0, 0.85) 60%, 
+        rgba(0, 0, 0, 0.98) 100%
+    );
+
+    /* Smooths out the flashlight movement */
+    transition: background 0.05s linear;
+    pointer-events: none; 
+    cursor: none; 
+}
+
+.landing-content {
+    pointer-events: auto; /* Re-enables clicking for buttons */
+    text-align: center;
+    z-index: 1001;
+}
+
+/* --- LOGO STYLING --- */
+.logo-wrapper.center {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+.logo-wrapper.center .logo-img {
+    width: 100px;
+    height: auto;
+    /* Blue glow that matches the forest vibe */
+    filter: drop-shadow(0 0 15px rgba(79, 209, 255, 0.6));
+    animation: simpleFloat 5s ease-in-out infinite;
+    opacity: 0.9;
+}
+
+/* --- TYPOGRAPHY (ELYRA TITLE) --- */
+.aura-title {
+    font-family: 'Kamerik', sans-serif;
+    font-size: 6rem;
+    font-weight: 300;
+    letter-spacing: 25px;
+    color: #ffffff;
+    margin: 0;
+    /* Layered glow effect */
+    text-shadow: 
+        0 0 10px rgba(255, 255, 255, 0.5),
+        0 0 30px rgba(79, 209, 255, 0.3);
+    text-transform: uppercase;
+    padding-left: 25px; /* Centers text perfectly despite letter spacing */
+}
+
+.aura-subtitle {
+    font-family: 'Kamerik', sans-serif;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 10px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    margin-top: 5px;
+}
+
+/* --- THE BUTTON --- */
+.aura-btn {
+    margin-top: 60px;
+    padding: 16px 45px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    font-family: 'Kamerik', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 4px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.aura-btn:hover {
+    background: #ffffff;
+    color: #000000;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+    transform: translateY(-3px);
+    border-color: #ffffff;
+}
+
+/* --- THE STORYTELLING DISSOLVE --- */
+.landing-overlay.is-fading {
+    /* Stop the torch movement transition and switch to a slow fade */
+    transition: 
+        opacity 2.5s cubic-bezier(0.4, 0, 0.2, 1), 
+        filter 2.5s ease;
+    
+    opacity: 0;
+    filter: blur(40px); /* Blurs the text and torch like a fading memory */
+    pointer-events: none; /* Allows the user to interact with the forest immediately */
+}
+
+/* Subtle zoom effect for the text during the dissolve */
+.is-fading .landing-content {
+    transition: transform 2.5s ease;
+    transform: scale(1.1);
+}
+
+@keyframes simpleFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+}

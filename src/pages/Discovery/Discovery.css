@@ -1,0 +1,183 @@
+.discovery-page {
+    background-color: #050b10;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Fix Navbar - Centered and Spaced */
+.discovery-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 5000;
+    opacity: 0;
+    transition: opacity 1s ease 0.5s;
+}
+
+.show-ui .discovery-nav { opacity: 1; }
+
+.nav-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 10px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-logo {
+    color: white;
+    font-weight: 900; /* Extra Bold */
+    letter-spacing: 8px;
+    font-size: 1.5rem;
+}
+
+.nav-links {
+    display: flex;
+    gap: 50px;
+    align-items: center;
+}
+
+.nav-item {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+}
+
+.nav-btn-special {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 12px 28px;
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+    font-weight: 800;
+    cursor: pointer;
+}
+
+/* THE GLASS BOX - Centered and Readable */
+.hero-box-container {
+    position: absolute;
+    top: 50%; /* Perfect Vertical Center */
+    left: 50%;
+    width: 550px; /* Slightly wider for better text flow */
+    margin-left: -275px;
+    margin-top: -150px;
+    z-index: 800;
+    opacity: 0;
+    transform-style: preserve-3d;
+}
+
+.show-ui .hero-box-container {
+    animation: heroReveal 1.2s cubic-bezier(0.19, 1, 0.22, 1) 0.4s forwards;
+}
+
+@keyframes heroReveal {
+    from { opacity: 0; transform: translate3d(0, 50px, 600px); filter: blur(15px); }
+    to { opacity: 1; transform: translate3d(0, 0, 600px); filter: blur(0); }
+}
+
+.hero-glass-card {
+    /* Darker tint (0.15 instead of 0.03) ensures text is readable */
+    background: rgba(10, 20, 30, 0.4); 
+    backdrop-filter: blur(50px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 60px;
+    border-radius: 40px;
+    text-align: center;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+}
+
+.hero-title {
+    font-size: 2.2rem; /* Bold, big title */
+    font-weight: 900;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: white;
+    margin-bottom: 25px;
+}
+
+.hero-description {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9); /* Brighter text */
+    margin-bottom: 40px;
+}
+
+.hero-cta {
+    background: white;
+    color: black;
+    border: none;
+    padding: 18px 50px;
+    border-radius: 50px;
+    font-weight: 900;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.hero-cta:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px white;
+}
+
+/* Layer Fixes */
+.layer-item {
+    position: absolute;
+    width: 120vw;
+    height: 120vh;
+    top: -10vh;
+    left: -10vw;
+    background-size: cover;
+    background-position: center;
+    pointer-events: none;
+}
+
+.rain-canvas {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    transform: translateZ(950px);
+}
+
+.sun-rays-layer {
+    position: absolute;
+    inset: -100px;
+    z-index: 800; /* Higher than forest layers */
+    pointer-events: none;
+    
+    /* Stronger Golden Beams */
+    background: linear-gradient(
+        115deg,
+        transparent 10%,
+        rgba(255, 190, 40, 0.2) 20%, /* Vivid Gold */
+        transparent 200%,
+        rgba(255, 210, 100, 0.15) 45%,
+        transparent 60%,
+        rgba(255, 180, 50, 0.2) 75%,
+        transparent 90%
+    );
+
+    /* 'screen' makes the gold "glow" on top of the dark trees */
+    mix-blend-mode: screen;
+    
+    /* Reduced blur so the rays are sharper and more visible */
+    filter: blur(30px);
+    
+    animation: raysPulse 6s ease-in-out infinite alternate;
+}
+
+@keyframes raysPulse {
+    0% { opacity: 0.4; transform: scale(1); }
+    100% { opacity: 0.8; transform: scale(1.1) translateX(20px); }
+}

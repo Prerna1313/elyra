@@ -1,0 +1,77 @@
+.generator-container {
+    position: fixed;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+    width: 90%;
+    max-width: 600px;
+    animation: slideUp 1s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.glass-input-card {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(79, 209, 255, 0.2);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+
+.generator-title {
+    font-family: 'Kamerik', sans-serif;
+    color: #fff;
+    letter-spacing: 4px;
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+
+.generator-desc {
+    color: rgba(255,255,255,0.5);
+    font-size: 0.8rem;
+    margin-bottom: 20px;
+}
+
+.forest-input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    color: white;
+    font-family: inherit;
+    resize: none;
+    height: 80px;
+    margin-bottom: 15px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.forest-input:focus {
+    border-color: rgba(79, 209, 255, 0.5);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.generate-btn {
+    width: 100%;
+    padding: 15px;
+    background: #fff;
+    color: #000;
+    border: none;
+    font-family: 'Kamerik', sans-serif;
+    font-weight: bold;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: 0.4s;
+}
+
+.generate-btn:hover {
+    box-shadow: 0 0 25px rgba(255,255,255,0.4);
+    transform: scale(1.02);
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translate(-50%, 50px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+}

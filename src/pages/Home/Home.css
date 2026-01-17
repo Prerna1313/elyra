@@ -1,0 +1,191 @@
+/* --- YOUR ORIGINAL LOGIC START --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --index: calc(1vw + 1vh);
+    --text: #e7e7e0;
+    --transition: transform .75s cubic-bezier(.075, .5, 0, 1);
+    --scrollTop: 0px; 
+}
+
+@font-face {
+    font-family: raleway_f;
+    src: url('/fonts/raleway-regular.woff2');
+}
+
+@font-face {
+    font-family: raleway_f;
+    src: url('/fonts/raleway-black.woff2');
+    font-weight: 900;
+}
+
+/* IMPORTANT: Wrapper/Content for ScrollSmoother */
+.wrapper {
+    overflow: hidden;
+    width: 100%;
+}
+
+.content {
+    will-change: transform;
+}
+
+.main-header {
+    position: relative;
+    background-color: #010101;
+}
+
+.main-header::after {
+    content: '';
+    position: absolute;
+    z-index: 100;
+    width: 100%;
+    height: calc(var(--index) * 10);
+    background-image: url('/img/home/ground.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    bottom: calc(var(--index) * -4.5);
+}
+
+.layers {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.layer {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background-size: cover;
+    background-position: center;
+    will-change: transform;
+    z-index: 2;
+    transition: var(--transition);
+}
+
+/* PARALLAX MATH */
+.layers__base { transform: translate3d(0, calc(var(--scrollTop) / 1.6), 0); z-index: 0; }
+.layers__middle { transform: translate3d(0, calc(var(--scrollTop) / 2.5), 0); }
+.layers__front { transform: translate3d(0, calc(var(--scrollTop) / 5.7), 0); }
+
+.layer__header {
+    z-index: 1;
+    transform: translate3d(0, calc(var(--scrollTop) / 2), 0);
+    transition: var(--transition);
+    will-change: transform;
+    text-transform: uppercase;
+    font-weight: 900;
+    color: var(--text);
+    text-shadow: 0 0 15px #9d822b;
+    font-family: raleway_f, sans-serif;
+}
+
+.layers__title { font-size: calc(var(--index) * 2.65); letter-spacing: calc(var(--index) / 2.25); }
+.layers__caption { font-size: calc(var(--index) / 1.175); letter-spacing: calc(var(--index) / 3.5); margin-top: calc(var(--index) * -.75); }
+
+/* --- NEURO BOXES --- */
+.neuro-info-wrapper {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.neuro-box {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid #9d822b;
+    max-width: 200px;
+    backdrop-filter: blur(10px);
+}
+
+.neuro-box h3 { font-size: 0.9rem; color: #9d822b; margin-bottom: 5px; }
+.neuro-box p { font-size: 0.75rem; color: var(--text); }
+
+/* --- LIBRARY SLIDER (NEW LOGIC) --- */
+.library-section {
+    min-height: 100vh;
+    position: relative;
+    padding: 100px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#bg-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-size: cover;
+    background-position: center;
+    filter: blur(20px);
+    z-index: -1;
+    transition: background-image 0.5s ease;
+}
+
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 50px;
+}
+
+.slider {
+    display: flex;
+    gap: 20px;
+    perspective: 1000px;
+}
+
+.card {
+    width: 250px;
+    height: 350px;
+    border-radius: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.5s ease;
+    position: relative;
+    border: 2px solid transparent;
+}
+
+.card.active { transform: scale(1.1); border-color: #9d822b; z-index: 10; }
+.card.hidden { display: none; }
+.card img { width: 100%; height: 100%; object-fit: cover; }
+
+/* --- OVERLAY --- */
+.overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.95);
+    z-index: 2000;
+    padding: 50px;
+    overflow-y: auto;
+}
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.close-btn {
+    position: fixed;
+    top: 20px; right: 20px;
+    background: #9d822b;
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    z-index: 2001;
+}

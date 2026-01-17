@@ -1,0 +1,19 @@
+.logo-wrapper.center {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px; /* Space between logo and ELYRA text */
+}
+
+.logo-wrapper.center .logo-img {
+    width: 120px; /* Adjust size based on your PNG's resolution */
+    height: auto;
+    /* Adds a soft blue glow to the PNG edges */
+    filter: drop-shadow(0 0 15px rgba(79, 209, 255, 0.5));
+    /* Slow floating animation */
+    animation: simpleFloat 4s ease-in-out infinite;
+}
+
+@keyframes simpleFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
