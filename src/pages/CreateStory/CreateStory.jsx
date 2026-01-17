@@ -1,6 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { Mic, Plus, Send, Compass, BookOpen, Sparkles, Upload, HardDrive, Image as ImageIcon, User, Settings, LogOut, LogIn } from 'lucide-react';
+import React, { useEffect, useState, useRef } from 'react';
+import { Mic, Plus, Send, Compass, BookOpen, Sparkles, Upload, HardDrive, Image as ImageIcon, User, Settings, LogOut, LogIn, Loader2, Copy, RefreshCw } from 'lucide-react';
 import './CreateStory.css';
+
+// Typewriter Sub-component for the story reveal
+const Typewriter = ({ text }) => {
+    const [displayedText, setDisplayedText] = useState("");
+    useEffect(() => {
+        let i = 0;
+        setDisplayedText("");
+        const timer = setInterval(() => {
+            setDisplayedText(text.slice(0, i));
+            i++;
+            if (i > text.length) clearInterval(timer);
+        }, 20);
+        return () => clearInterval(timer);
+    }, [text]);
+    return <p>{displayedText}</p>;
+};
 
 const CreateStory = () => {
     const [scrollY, setScrollY] = useState(0);
@@ -10,12 +26,17 @@ const CreateStory = () => {
     const [showFileMenu, setShowFileMenu] = useState(false);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     
+    // Backend & Story States
+    const [generatedStory, setGeneratedStory] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const storySectionRef = useRef(null);
+    
     const vh = window.innerHeight;
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
+    // Reset scroll on load
+    useEffect(() => { window.scrollTo(0, 0); }, []);
 
+    // Smooth Parallax Animation (Lerp)
     useEffect(() => {
         let requestRef;
         const lerp = (start, end, factor) => start + (end - start) * factor;
@@ -27,19 +48,41 @@ const CreateStory = () => {
         return () => cancelAnimationFrame(requestRef);
     }, [scrollY]);
 
+    // Native Scroll Listener
     useEffect(() => {
         const handleScroll = () => setScrollY(window.scrollY);
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const handleInputChange = (e) => {
-        setPrompt(e.target.value);
-        setIsTyping(e.target.value.length > 0);
+    // API Call to Node.js Backend
+    const handleSend = async () => {
+        if (!prompt || isLoading) return;
+        setIsLoading(true);
+        try {
+            const response = await fetch('http://localhost:5000/api/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt })
+            });
+            const data = await response.json();
+            if (data.answer) {
+                setGeneratedStory(data.answer);
+                // Scroll to result after a short delay
+                setTimeout(() => {
+                    storySectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+                }, 300);
+            }
+        } catch (e) {
+            alert("Ensure backend is running on port 5000");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const isVisible = smoothScrollY < 6500;
 
+    // Calculate dynamic transform for parallax layers
     const getLayerStyle = (id) => {
         let yPos = 0;
         const s = smoothScrollY;
@@ -62,6 +105,15 @@ const CreateStory = () => {
     return (
         <div className="create-container" onClick={() => { setShowFileMenu(false); setShowProfileMenu(false); }}>
             
+            {/* Loading Screen */}
+            {isLoading && (
+                <div className="loading-overlay">
+                    <Loader2 className="spinner" size={40} />
+                    <p>Fetching your story from the stars...</p>
+                </div>
+            )}
+
+            {/* Sticky Navigation */}
             <nav className="navbar-fixed">
                 <div className="nav-container">
                     <div className="nav-logo">ELYRA</div>
@@ -87,6 +139,7 @@ const CreateStory = () => {
                 </div>
             </nav>
 
+            {/* Parallax Background Layers */}
             <div className="parallax-viewport">
                 {['L1', 'L2', 'L3', 'L4', 'L5'].map((id, index) => (
                     <div key={id} className={`layer ${id}`} style={{ ...getLayerStyle(id), zIndex: index + 10 }}>
@@ -95,18 +148,20 @@ const CreateStory = () => {
                 ))}
             </div>
 
+            {/* Hero Heading */}
             <div className="hero-overlay" style={{ opacity: Math.max(0, 1 - smoothScrollY / 1500) }}>
                 <h1 className="hero-title-refined">CREATE YOUR OWN <span className="magic-text">STORY</span></h1>
                 <p className="hero-subtitle">Every scroll weaves a new world.</p>
             </div>
 
+            {/* REFINED PROMPT BOX */}
             <div className={`prompt-wrapper ${isVisible ? 'show' : 'hide'}`} onClick={(e) => e.stopPropagation()}>
                 <div className="prompt-box-accessible">
                     <div className="prompt-inner">
                         <div className="input-section">
                             <div className="file-upload-container">
                                 <button className="tool-btn" onClick={() => setShowFileMenu(!showFileMenu)}>
-                                    <Plus size={22} />
+                                    <Plus size={22} strokeWidth={2.5}/>
                                 </button>
                                 {showFileMenu && (
                                     <div className="dropdown-menu file-menu">
@@ -124,18 +179,23 @@ const CreateStory = () => {
                                 type="text" 
                                 placeholder="Describe your journey..." 
                                 value={prompt}
-                                onChange={handleInputChange}
+                                onChange={(e) => { setPrompt(e.target.value); setIsTyping(e.target.value.length > 0); }}
+                                onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                             />
                         </div>
-                        <div className="action-section">
-                            <button className="side-mic-btn"><Mic size={20} /></button>
-                            <button className={`morph-send-btn ${isTyping ? 'active' : 'waiting'}`}>
-                                {!isTyping ? (
+                        
+                        {/* Grouped Action Cluster (Mic + Send) */}
+                        <div className="action-group">
+                            <button className="prompt-mic-btn">
+                                <Mic size={20} />
+                            </button>
+                            <button className={`morph-send-btn ${isTyping ? 'active' : 'waiting'}`} onClick={handleSend}>
+                                {isTyping ? (
+                                    <Send size={18} />
+                                ) : (
                                     <div className="visualizer-bars">
                                         <span></span><span></span><span></span>
                                     </div>
-                                ) : (
-                                    <Send size={16} />
                                 )}
                             </button>
                         </div>
@@ -143,7 +203,28 @@ const CreateStory = () => {
                 </div>
             </div>
 
+            {/* Large spacer for scrolling experience */}
             <div className="scroll-spacer" style={{ height: '8500px' }}></div>
+
+            {/* WHITE BG STORY SECTION */}
+            <div className={`story-result-page ${generatedStory ? 'visible' : ''}`} ref={storySectionRef}>
+                {generatedStory && (
+                    <div className="story-content-box">
+                        <h2 className="result-title">A Tale of {prompt.split(' ')[0] || "Wonder"}</h2>
+                        <div className="result-text">
+                            <Typewriter text={generatedStory} />
+                        </div>
+                        <div className="story-footer">
+                           <button className="footer-btn" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
+                               <RefreshCw size={16}/> New Story
+                           </button>
+                           <button className="footer-btn" onClick={() => navigator.clipboard.writeText(generatedStory)}>
+                               <Copy size={16}/> Copy Text
+                           </button>
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
